@@ -21,6 +21,7 @@
 package benchmarks
 
 import (
+	"context"
 	"io/ioutil"
 	"log"
 	"testing"
@@ -83,6 +84,16 @@ func BenchmarkDisabledWithoutFields(b *testing.B) {
 		b.RunParallel(func(pb *testing.PB) {
 			for pb.Next() {
 				logger.Info(getMessage(0))
+			}
+		})
+	})
+	b.Run("cdr.dev/slog", func(b *testing.B) {
+		logger := newDisabledSlog()
+		ctx := context.Background()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				logger.Info(ctx, getMessage(0))
 			}
 		})
 	})
@@ -155,6 +166,16 @@ func BenchmarkDisabledAccumulatedContext(b *testing.B) {
 			}
 		})
 	})
+	b.Run("cdr.dev/slog", func(b *testing.B) {
+		logger := newDisabledSlog().With(fakeSlogFields()...)
+		ctx := context.Background()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				logger.Info(ctx, getMessage(0))
+			}
+		})
+	})
 	b.Run("rs/zerolog", func(b *testing.B) {
 		logger := fakeZerologContext(newDisabledZerolog().With()).Logger()
 		b.ResetTimer()
@@ -212,6 +233,16 @@ func BenchmarkDisabledAddingFields(b *testing.B) {
 		b.RunParallel(func(pb *testing.PB) {
 			for pb.Next() {
 				logger.WithFields(fakeLogrusFields()).Info(getMessage(0))
+			}
+		})
+	})
+	b.Run("cdr.dev/slog", func(b *testing.B) {
+		logger := newDisabledSlog()
+		ctx := context.Background()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				logger.With(fakeSlogFields()...).Info(ctx, getMessage(0))
 			}
 		})
 	})
@@ -312,6 +343,16 @@ func BenchmarkWithoutFields(b *testing.B) {
 		b.RunParallel(func(pb *testing.PB) {
 			for pb.Next() {
 				logger.Info(getMessage(0))
+			}
+		})
+	})
+	b.Run("cdr.dev/slog", func(b *testing.B) {
+		logger := newSlog()
+		ctx := context.Background()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				logger.Info(ctx, getMessage(0))
 			}
 		})
 	})
@@ -453,6 +494,16 @@ func BenchmarkAccumulatedContext(b *testing.B) {
 			}
 		})
 	})
+	b.Run("cdr.dev/slog", func(b *testing.B) {
+		logger := newSlog().With(fakeSlogFields()...)
+		ctx := context.Background()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				logger.Info(ctx, getMessage(0))
+			}
+		})
+	})
 	b.Run("rs/zerolog", func(b *testing.B) {
 		logger := fakeZerologContext(newZerolog().With()).Logger()
 		b.ResetTimer()
@@ -561,6 +612,16 @@ func BenchmarkAddingFields(b *testing.B) {
 		b.RunParallel(func(pb *testing.PB) {
 			for pb.Next() {
 				logger.WithFields(fakeLogrusFields()).Info(getMessage(0))
+			}
+		})
+	})
+	b.Run("cdr.dev/slog", func(b *testing.B) {
+		logger := newSlog()
+		ctx := context.Background()
+		b.ResetTimer()
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				logger.With(fakeSlogFields()...).Info(ctx, getMessage(0))
 			}
 		})
 	})

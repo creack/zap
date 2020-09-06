@@ -5,6 +5,7 @@ go 1.13
 replace go.uber.org/zap => ../
 
 require (
+	cdr.dev/slog v1.3.0
 	github.com/apex/log v1.1.1
 	github.com/go-kit/kit v0.9.0
 	github.com/go-stack/stack v1.8.0 // indirect
